@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bookly — сервис онлайн-записи и управления расписанием для салонов, студий и частных мастеров. Без Excel, звонков и потерянных клиентов.">
+  <meta name="theme-color" content="#2563EB">
+  <title>Bookly — запись, которая работает сама</title>
+
+  <!-- Канонический адрес: после публикации замените на свой домен -->
+  <link rel="canonical" href="https://bookly.ru/">
+
+  <!-- Превью ссылки в Telegram, VK, WhatsApp и соцсетях (Open Graph).
+       Домен bookly.ru — заглушка: замените на свой, иначе превью не подтянется. -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Bookly">
+  <meta property="og:title" content="Bookly — запись, которая работает сама">
+  <meta property="og:description" content="Сервис онлайн-записи и управления расписанием для салонов, студий и частных мастеров. Без Excel, звонков и потерянных клиентов.">
+  <meta property="og:url" content="https://bookly.ru/">
+  <meta property="og:image" content="https://bookly.ru/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Bookly — запись, которая работает сама">
+
+  <!-- Карточка для Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bookly — запись, которая работает сама">
+  <meta name="twitter:description" content="Сервис онлайн-записи для салонов, студий и мастеров. Без Excel, звонков и потерянных клиентов.">
+  <meta name="twitter:image" content="https://bookly.ru/og-image.png">
+
+  <!-- Иконки сайта: SVG встроен прямо в файл, PNG лежат рядом с index.html -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%232563EB'/%3E%3Ctext%20x='32'%20y='45'%20font-family='Arial,Helvetica,sans-serif'%20font-size='40'%20font-weight='700'%20fill='%23FFFFFF'%20text-anchor='middle'%3EB%3C/text%3E%3C/svg%3E" type="image/svg+xml">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- Шрифт Inter (400/600/700). При отсутствии сети — системный фолбэк из --font-stack -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       1. ДИЗАЙН-ТОКЕНЫ: палитра, радиусы, тени, типографика
+       ============================================================ */
+    :root {
+      --accent: #2563EB;        /* акцентный синий — ТОЛЬКО кнопки, ссылки, иконки Features, активные элементы */
+      --accent-dark: #1D4ED8;  /* hover-состояние акцента */
+      --accent-soft: #DBEAFE;  /* мягкая подложка акцента */
+      --accent-light: #93C5FD; /* акцент для ссылок на тёмном фоне */
+      --text: #111827;         /* почти чёрный — основной текст */
+      --text-muted: #6B7280;   /* серый — второстепенный текст */
+      --bg: #FFFFFF;
+      --bg-light: #F9FAFB;
+      --bg-gray: #f7f7f7;      /* фон секции UseCases */
+      --border: #E5E7EB;
+      --radius-sm: 8px;        /* карточки и кнопки */
+      --radius-lg: 12px;       /* контейнер Hero */
+      --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.07);
+      --shadow-lift: 0 14px 24px -6px rgba(0, 0, 0, 0.12);
+      --shadow-glow: 0 10px 30px -6px rgba(37, 99, 235, 0.55); /* финальный CTA — самая яркая кнопка */
+      --container: 1160px;
+      --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    }
+
+    /* ============================================================
+       2. СБРОС И БАЗОВЫЕ СТИЛИ (mobile-first)
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* Отступ при переходе по анкорам, чтобы фиксированная шапка не накрывала заголовки */
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-stack);
+      font-size: 16px;          /* основной текст — не меньше 16px */
+      line-height: 1.6;         /* межстрочный интервал основного текста */
+      color: var(--text);
+      background-color: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Заголовки — Inter Bold, межстрочный 1.1 */
+    h1, h2, h3 { margin: 0 0 16px; font-weight: 700; line-height: 1.1; }
+    h2 { font-size: 28px; letter-spacing: -0.01em; }
+    h3 { font-size: 18px; }
+    p  { margin: 0 0 12px; }
+
+    img, svg { display: block; max-width: 100%; }
+    img { height: auto; }
+    ul { margin: 0; padding: 0; list-style: none; }
+    button { font: inherit; }
+
+    a { color: var(--accent); text-decoration: none; transition: color .2s ease; }
+    a:hover { color: var(--accent-dark); }
+
+    /* Фокус для навигации с клавиатуры */
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    /* Утилита для текста, скрытого визуально, но доступного скринридерам */
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; margin: -1px;
+      clip: rect(0 0 0 0); overflow: hidden; white-space: nowrap;
+    }
+
+    /* ============================================================
+       3. КОНТЙНЕР И СЕТКИ СЕКЦИЙ
+       ============================================================ */
+    .container { max-width: var(--container); margin: 0 auto; padding-inline: 24px; } /* мобильный паддинг 24px */
+
+    .section { padding-block: 64px; }
+    .section--gray  { background: var(--bg-gray); }   /* UseCases */
+    .section--light { background: var(--bg-light); }  /* HowItWorks / Interface */
+
+    .section__head { max-width: 660px; margin: 0 auto 40px; text-align: center; }
+    .section__head p { color: var(--text-muted); }
+
+    /* ============================================================
+       4. КНОПКИ — при наведении лёгкий подъём и усиление тени.
+       Текст и иконка выровнены через inline-flex + фиксированный
+       line-height, чтобы содержимое не «прыгало».
+       ============================================================ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 20px;
+      font-weight: 600; font-size: 16px; line-height: 1.2;
+      border: 1px solid transparent; border-radius: var(--radius-sm);
+      cursor: pointer; text-decoration: none; white-space: nowrap;
+      transition: transform .2s ease, box-shadow .2s ease,
+                  background-color .2s ease, border-color .2s ease, color .2s ease;
+    }
+    .btn:hover  { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+    .btn:active { transform: translateY(0); box-shadow: var(--shadow-soft); }
+
+    .btn--primary { background: var(--accent); color: #fff; }
+    .btn--primary:hover { background: var(--accent-dark); color: #fff; }
+
+    /* Серая обводка — кнопка «Войти» в шапке */
+    .btn--outline { background: transparent; color: var(--text); border-color: #D1D5DB; }
+    .btn--outline:hover { border-color: var(--text); background: #fff; color: var(--text); }
+
+    .btn--lg { padding: 15px 30px; font-size: 17px; }
+    .btn--sm { padding: 8px 16px; font-size: 15px; }
+
+    /* Самая яркая кнопка страницы — финальный CTA (акцент + свечение) */
+    .btn--bright { background: var(--accent); color: #fff; box-shadow: var(--shadow-glow); }
+    .btn--bright:hover {
+      background: var(--accent-dark); color: #fff;
+      box-shadow: 0 16px 36px -6px rgba(37, 99, 235, 0.65);
+    }
+
+    .btn--full { width: 100%; }
+
+    /* ============================================================
+       5. ШАПКА — прозрачная сверху, при скролле становится белой
+          с лёгкой тенью (класс .header--scrolled вешает JS)
+       ============================================================ */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: transparent;
+      transition: background-color .3s ease, box-shadow .3s ease;
+    }
+    .header--scrolled { background: #fff; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06); }
+
+    .header__inner {
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 64px; gap: 16px;
+    }
+
+    .logo { font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .logo:hover { color: var(--text); }
+
+    /* Навигация (mobile-first): выпадающая панель под шапкой.
+       На >=768px превращается в горизонтальную строку (см. блок адаптива). */
+    .nav {
+      position: absolute; top: 100%; left: 0; right: 0;
+      display: block;
+      background: #fff; border-bottom: 1px solid var(--border);
+      max-height: 0; overflow: hidden; opacity: 0; visibility: hidden;
+      transition: max-height .35s ease, opacity .3s ease, visibility .3s ease; /* плавное открытие/закрытие */
+    }
+    .nav.is-open { max-height: 380px; opacity: 1; visibility: visible; box-shadow: var(--shadow-soft); }
+
+    .nav__list { display: flex; flex-direction: column; padding: 8px 24px 0; }
+    .nav__link { display: block; padding: 12px 0; font-size: 16px; color: var(--text); }
+    .nav__link:hover { color: var(--accent); }
+    .nav__cta { margin: 8px 24px 20px; }
+
+    /* Бургер: три полоски -> крестик через transform */
+    .burger {
+      display: inline-flex; flex-direction: column; justify-content: center; align-items: stretch;
+      gap: 5px; width: 42px; height: 42px; padding: 9px;
+      background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .burger span {
+      display: block; height: 2px; background: var(--text); border-radius: 2px;
+      transition: transform .3s ease, opacity .3s ease;
+    }
+    .burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .burger.is-open span:nth-child(2) { opacity: 0; }
+    .burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ============================================================
+       6. HERO — первый экран (2 колонки на десктопе)
+       ============================================================ */
+    .hero { padding-block: 40px 72px; background: linear-gradient(180deg, #fff 0%, var(--bg-light) 100%); }
+
+    .hero__grid { display: grid; grid-template-columns: 1fr; gap: 56px; align-items: center; }
+
+    .hero__title { font-size: 30px; letter-spacing: -0.02em; margin-bottom: 20px; }
+    .hero__sub { font-size: 17px; color: var(--text-muted); max-width: 480px; margin-bottom: 28px; }
+
+    /* Мелкий текст под CTA — «Карта не нужна» */
+    .hero__note {
+      display: flex; align-items: center; gap: 8px;
+      margin: 14px 0 0; font-size: 14px; color: var(--text-muted);
+    }
+    .hero__note svg { flex: none; color: var(--accent); }
+
+    /* ---------- Макет ноутбука (скриншот «обрезан» под устройство) ---------- */
+    .hero__visual { position: relative; max-width: 560px; margin-inline: auto; }
+
+    .laptop__bezel {
+      background: #111827;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: 10px 10px 0;
+      box-shadow: var(--shadow-soft);
+    }
+    .laptop__display {
+      background: #fff; border: 1px solid #E5E7EB;
+      border-radius: 6px 6px 0 0; overflow: hidden;
+    }
+    .laptop__base {
+      position: relative; height: 16px;
+      background: linear-gradient(180deg, #E5E7EB, #D1D5DB);
+      border-radius: 0 0 16px 16px;
+      box-shadow: var(--shadow-soft);
+    }
+    .laptop__notch {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 90px; height: 6px;
+      background: #B7BCC7; border-radius: 0 0 8px 8px;
+    }
+
+    /* ---------- «Живой» интерфейс внутри ноутбука ---------- */
+    .app { font-size: 12px; color: var(--text); }
+
+    .app__top {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 8px 10px; background: #fff; border-bottom: 1px solid var(--border);
+    }
+    .app__brand { font-weight: 700; font-size: 13px; color: var(--text); }
+    .app__user {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .cal__head { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; }
+    .cal__title { font-weight: 600; font-size: 13px; }
+    .cal__actions { display: flex; gap: 6px; }
+    .cal__btn {
+      min-width: 22px; height: 22px; padding: 0 4px;
+      border: 1px solid var(--border); background: #fff; border-radius: 6px;
+      color: var(--text-muted); font-size: 11px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cal__btn--today { color: var(--accent); border-color: var(--accent-soft); font-weight: 600; }
+
+    /* Дни недели над прокручиваемым телом календаря (строятся в JS) */
+    .cal-head {
+      display: grid; grid-template-columns: 40px repeat(7, 1fr);
+      border-bottom: 1px solid var(--border); background: #fff;
+    }
+    .cal-head__day {
+      padding: 6px 0; text-align: center;
+      font-size: 10px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .cal-head__day.is-today { color: var(--accent); } /* «сегодня» — активный элемент */
+
+    /* Прокручиваемое тело недели: сетка строится в JS и дублируется для бесшовного цикла */
+    .cal-viewport { height: 300px; overflow: hidden; position: relative; }
+    .cal-track { display: flex; flex-direction: column; will-change: transform; }
+    .cal-week { display: grid; grid-template-columns: 40px repeat(7, 1fr); grid-auto-rows: 16px; }
+
+    .cal-time {
+      align-self: center; padding-right: 8px;
+      font-size: 10px; color: var(--text-muted); text-align: right; line-height: 1;
+    }
+
+    .cal-event {
+      margin: 1px 2px 1px 0; padding: 1px 4px;
+      border-radius: 4px; border-left: 2px solid;
+      font-size: 10px; line-height: 1.35;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cal-event--busy  { background: var(--accent-soft); border-color: var(--accent); color: #1E40AF; } /* подтверждённая запись */
+    .cal-event--muted { background: #F3F4F6; border-color: #D1D5DB; color: var(--text-muted); }        /* предварительная */
+
+    /* ---------- Всплывающее окно с профилем клиента ---------- */
+    .popup {
+      position: absolute; right: -8px; bottom: 16%; z-index: 3;
+      width: 232px; padding: 12px;
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lift);
+      animation: popup-cycle 12s ease-in-out infinite; /* модалка «живёт» своей жизнью */
+    }
+    @keyframes popup-cycle {
+      0%, 4%   { opacity: 0; transform: translateY(12px) scale(.97); }
+      10%, 86% { opacity: 1; transform: translateY(0)   scale(1); }
+      94%,100% { opacity: 0; transform: translateY(8px) scale(.98); }
+    }
+    .popup__head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .popup__avatar {
+      flex: none; width: 34px; height: 34px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 12px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .popup__name { display: block; font-size: 13px; font-weight: 600; }
+    .popup__tag  { display: block; font-size: 11px; color: var(--text-muted); }
+    .popup__row {
+      display: flex; justify-content: space-between; gap: 8px;
+      padding: 3px 0; border-bottom: 1px dashed var(--border);
+      font-size: 11px; color: var(--text-muted);
+    }
+    .popup__row b { color: var(--text); font-weight: 600; }
+    .popup__note {
+      margin: 8px 0; padding: 5px 8px;
+      background: #FEF3C7; color: #92400E; border-radius: 6px; font-size: 11px;
+    }
+    .popup .btn { width: 100%; padding: 6px 0; font-size: 12px; }
+
+    /* Плавающая плашка с ключевой цифрой (акцент — только цифра) */
+    .chip-stat {
+      position: absolute; left: -8px; top: 10%; z-index: 2;
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 10px 14px;
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-soft);
+      animation: float-y 6s ease-in-out infinite;
+    }
+    .chip-stat b    { font-size: 22px; line-height: 1.1; color: var(--accent); } /* ключевая цифра — акцентная */
+    .chip-stat span { font-size: 11px; color: var(--text-muted); }
+    @keyframes float-y {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+
+    /* ============================================================
+       7. FEATURES — сетка 4 колонок (2 на планшете, 1 на мобильном)
+       ============================================================ */
+    .features__grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+    .feature {
+      padding: 20px;
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .feature:hover { transform: translateY(-4px); box-shadow: var(--shadow-soft); }
+
+    /* Иконка: подложка всегда залита акцентом — если SVG вдруг
+       не отрисуется, останется аккуратный акцентный квадрат,
+       и сетка не «поедет». */
+    .icon-box {
+      width: 48px; height: 48px; margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--accent); color: #fff; border-radius: var(--radius-sm);
+    }
+    .icon-box svg { flex: none; }
+
+    .feature h3 { font-size: 17px; margin-bottom: 8px; }
+    .feature p  { margin: 0; color: var(--text-muted); }
+
+    /* ============================================================
+       8. HOW IT WORKS — вертикальный таймлайн из 3 шагов
+       ============================================================ */
+    .timeline { position: relative; max-width: 640px; margin: 0 auto; }
+
+    /* Соединительная линия слева от кружков */
+    .timeline::before {
+      content: '';
+      position: absolute; left: 31px; top: 14px; bottom: 14px; width: 2px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--accent-soft) 45%, var(--border) 100%);
+    }
+
+    .step { position: relative; display: flex; align-items: flex-start; gap: 20px; padding-bottom: 44px; }
+    .step:last-child { padding-bottom: 0; }
+
+    /* Большая цифра в круге — активный элемент, поэтому акцентный */
+    .step__num {
+      position: relative; z-index: 1; flex: none;
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #fff; border: 2px solid var(--accent); color: var(--accent);
+      font-size: 24px; font-weight: 700; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step__body h3 { font-size: 19px; margin: 6px 0 6px; }
+    .step__body p  { margin: 0; color: var(--text-muted); max-width: 460px; }
+
+    /* ============================================================
+       9. INTERFACE — «живые» экраны продукта.
+          Эффект устройства: обводка, скругление, мягкая тень,
+          строка-«браузер» сверху — интерфейс отделён от фона.
+       ============================================================ */
+    .screens { display: grid; grid-template-columns: 1fr; gap: 32px 24px; }
+
+    .screen {
+      display: flex; flex-direction: column;
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft); overflow: hidden;
+    }
+    .screen__bar {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 12px; background: var(--bg-light); border-bottom: 1px solid var(--border);
+    }
+    .screen__dot { width: 9px; height: 9px; border-radius: 50%; background: #D1D5DB; }
+    .screen__url {
+      margin-left: 8px; padding: 1px 10px;
+      background: #fff; border: 1px solid var(--border); border-radius: 99px;
+      font-size: 11px; color: var(--text-muted);
+    }
+    .screen__body { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 14px; }
+    .screen__caption {
+      margin: 0; padding: 10px 12px; text-align: center;
+      font-size: 14px; color: var(--text-muted);
+      border-top: 1px solid var(--border); background: #fff;
+    }
+
+    /* Мини-карточки статистики (дашборд) */
+    .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-card { padding: 8px; background: var(--bg-light); border: 1px solid var(--border); border-radius: 6px; }
+    .stat-card b { display: block; font-size: 15px; line-height: 1.2; }
+    .stat-card b.is-accent { color: var(--accent); } /* ключевая цифра — акцент */
+    .stat-card span { font-size: 10px; color: var(--text-muted); }
+
+    /* Список записей на сегодня */
+    .visit-list { display: flex; flex-direction: column; gap: 6px; }
+    .visit {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; font-size: 11px;
+      background: #fff; border: 1px solid var(--border); border-radius: 6px;
+    }
+    .visit__time { flex: none; width: 38px; font-weight: 600; }
+    .visit__client { color: var(--text-muted); }
+    .visit__status {
+      margin-left: auto; flex: none;
+      padding: 2px 8px; border-radius: 99px;
+      background: var(--accent-soft); color: #1E40AF;
+      font-size: 10px; font-weight: 600;
+    }
+    .visit__status--wait { background: #FEF3C7; color: #92400E; }
+
+    /* Быстрая форма записи */
+    .form-row { display: flex; flex-direction: column; gap: 4px; }
+    .form-label {
+      font-size: 10px; font-weight: 600; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .04em;
+    }
+    .form-input {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      padding: 7px 10px; font-size: 12px;
+      background: #fff; border: 1px solid var(--border); border-radius: 6px;
+    }
+    .form-input span { color: var(--text-muted); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      padding: 4px 10px; font-size: 11px; color: var(--text-muted);
+      background: #fff; border: 1px solid var(--border); border-radius: 99px;
+    }
+    .chip.is-active { border-color: var(--accent); color: var(--accent); font-weight: 600; } /* выбранный элемент — активный */
+
+    /* Расписание команды: акцентные блоки — занятое время */
+    .master-row { display: grid; grid-template-columns: 76px 1fr; gap: 8px; align-items: center; font-size: 11px; }
+    .master-row__name { font-weight: 600; }
+    .track { position: relative; height: 14px; background: #F3F4F6; border-radius: 99px; overflow: hidden; }
+    .track__fill { position: absolute; top: 0; bottom: 0; border-radius: 99px; background: var(--accent); opacity: .85; }
+
+    /* Блок мобильного вида (телефон + пояснение) */
+    .interface__mobile { display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 48px; }
+    .interface__mobile-text { max-width: 380px; text-align: center; }
+    .interface__mobile-text p { color: var(--text-muted); margin: 0; }
+
+    .phone {
+      width: 230px; border: 8px solid #111827; border-radius: 26px;
+      background: #fff; box-shadow: var(--shadow-soft); overflow: hidden;
+    }
+    .phone__notch { width: 70px; height: 5px; margin: 6px auto 0; background: #111827; border-radius: 99px; }
+    .phone__body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .phone__title { font-size: 12px; font-weight: 600; }
+
+    .slot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .slot {
+      padding: 5px 0; text-align: center; font-size: 11px; color: var(--text-muted);
+      background: #fff; border: 1px solid var(--border); border-radius: 6px;
+    }
+    .slot.is-active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; } /* выбранный слот */
+    .slot.is-taken  { background: var(--bg-light); color: #D1D5DB; text-decoration: line-through; }
+
+    /* ============================================================
+       10. USECASES — карточки «для кого подходит»
+       ============================================================ */
+    .usecases__grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+    .usecase {
+      padding: 24px;
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-soft);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .usecase:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+    /* Иконка сферы — нейтральный тёмный квадрат (акцент здесь не используем) */
+    .usecase__icon {
+      width: 48px; height: 48px; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--text); color: #fff; border-radius: var(--radius-sm);
+    }
+    .usecase__icon svg { flex: none; }
+
+    .usecase h3 { font-size: 18px; margin-bottom: 10px; }
+    .usecase p  { margin: 0 0 6px; color: var(--text-muted); }
+    .usecase p:last-child { margin-bottom: 0; }
+    .usecase strong { color: var(--text); font-weight: 600; }
+
+    /* 4-я карточка — на всю ширину сетки */
+    .usecase--wide { grid-column: 1 / -1; }
+
+    /* ============================================================
+       11. FINAL CTA — тёмный контрастный блок
+       ============================================================ */
+    .finalcta { padding-block: 88px; background: var(--text); color: #fff; text-align: center; }
+    .finalcta h2 { max-width: 680px; margin: 0 auto 16px; font-size: 30px; color: #fff; }
+    .finalcta > .container > p:first-of-type {
+      max-width: 580px; margin: 0 auto 32px; color: #D1D5DB;
+    }
+    /* Мелкий текст под кнопкой + ссылка на политику */
+    .finalcta__fine { max-width: 520px; margin: 18px auto 0; font-size: 13px; color: #9CA3AF; }
+    .finalcta__fine a { color: var(--accent-light); }
+    .finalcta__fine a:hover { color: #fff; }
+
+    /* ============================================================
+       12. FOOTER — серый фон
+       ============================================================ */
+    .footer { padding-block: 40px 24px; background: #F3F4F6; border-top: 1px solid var(--border); }
+
+    .footer__inner { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+    .footer__tagline { margin: 4px 0 0; font-size: 14px; color: var(--text-muted); }
+
+    .footer__nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+    .footer__nav a { font-size: 15px; color: var(--text-muted); }
+    .footer__nav a:hover { color: var(--accent); }
+
+    .socials { display: flex; gap: 10px; }
+    .social {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: #fff; border: 1px solid var(--border); color: var(--text-muted);
+      transition: color .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .social:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+
+    .footer__copy { margin: 0; font-size: 13px; color: var(--text-muted); }
+
+    /* ============================================================
+       13. МОДАЛЬНОЕ ОКНО (политика конфиденциальности)
+       ============================================================ */
+    .modal {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      background: rgba(17, 24, 39, 0.55);
+      opacity: 0; visibility: hidden;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .modal.is-open { opacity: 1; visibility: visible; }
+
+    .modal__card {
+      width: 100%; max-width: 520px; max-height: 80vh; overflow-y: auto;
+      padding: 24px;
+      background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-lift);
+      transform: translateY(16px); transition: transform .25s ease;
+    }
+    .modal.is-open .modal__card { transform: translateY(0); }
+    .modal__card h3 { font-size: 20px; }
+    .modal__card p { color: var(--text-muted); font-size: 15px; }
+    .modal__close { margin-top: 8px; }
+
+    /* ============================================================
+       13.1 ФОРМЫ И ДЕМО-ВИДЖЕТ В МОДАЛЬНЫХ ОКНАХ
+       ============================================================ */
+    .is-hidden { display: none !important; }
+
+    .modal__card--form, .modal__card--demo { position: relative; }
+    .modal__card--form { max-width: 440px; }
+    .modal__card--demo { max-width: 400px; }
+    .modal__sub { font-size: 13px; color: var(--text-muted); }
+
+    /* Крестик в углу окна */
+    .modal__x {
+      position: absolute; top: 12px; right: 12px;
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); background: transparent; border: 0; cursor: pointer;
+      transition: background-color .2s ease, color .2s ease;
+    }
+    .modal__x:hover { background: var(--bg-light); color: var(--text); }
+
+    /* Поля формы */
+    .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    .field__label { font-size: 13px; font-weight: 600; color: var(--text); }
+    .field__input, .field__select {
+      width: 100%; padding: 10px 12px;
+      font: inherit; font-size: 15px; color: var(--text);
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .field__input:focus, .field__select:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .field__error { min-height: 1em; font-size: 13px; line-height: 1.3; color: #DC2626; }
+    .field.is-error .field__input { border-color: #DC2626; }
+
+    /* Чекбокс согласия */
+    .field__check {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; color: var(--text-muted); cursor: pointer;
+    }
+    .field__check input { flex: none; width: 15px; height: 15px; margin: 3px 0 0; accent-color: var(--accent); }
+
+    /* Табы «Создать аккаунт / Войти» */
+    .auth-tabs {
+      display: flex; gap: 4px; padding: 4px; margin-bottom: 16px;
+      background: var(--bg-light); border-radius: var(--radius-sm);
+    }
+    .auth-tab {
+      flex: 1; padding: 8px 10px;
+      font-size: 14px; font-weight: 600; color: var(--text-muted);
+      background: transparent; border: 0; border-radius: 6px; cursor: pointer;
+      transition: background-color .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .auth-tab.is-active { background: #fff; color: var(--text); box-shadow: var(--shadow-soft); }
+
+    /* Экран успеха */
+    .auth-success, .demo-done { text-align: center; }
+    .auth-success__check, .demo-done__check { margin: 4px auto 12px; color: var(--accent); }
+    .auth-success__btns, .demo-done__btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .demo-done__title { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
+    .demo-done__summary { margin: 0 0 6px; font-weight: 600; }
+
+    /* Анимация галочки: окружность и «птичка» прочерчиваются штрихом */
+    .auth-success__check circle, .demo-done__check circle {
+      stroke-dasharray: 152; stroke-dashoffset: 152;
+      animation: draw-stroke .45s ease-out forwards;
+    }
+    .auth-success__check path, .demo-done__check path {
+      stroke-dasharray: 34; stroke-dashoffset: 34;
+      animation: draw-stroke .3s .35s ease-out forwards;
+    }
+    @keyframes draw-stroke { to { stroke-dashoffset: 0; } }
+
+    /* Демо-виджет: шаги выбора (чипы и слоты крупнее мокапных) */
+    .demo__step { margin-bottom: 14px; }
+    .modal .form-label { display: block; margin-bottom: 6px; font-size: 12px; }
+    .modal .chip { font-size: 13px; padding: 6px 12px; }
+    .modal .slot { font-size: 13px; padding: 8px 0; }
+    .demo__summary { margin: 2px 0 14px; font-size: 14px; color: var(--text-muted); }
+
+    /* Кликабельные чипы и слоты в демо */
+    .modal button.chip, .modal button.slot { cursor: pointer; }
+    .modal button.chip:hover:not(:disabled),
+    .modal button.slot:hover:not(:disabled) {
+      border-color: var(--accent); color: var(--accent); transform: translateY(-1px);
+    }
+    .modal button.slot:disabled { cursor: default; }
+
+    /* Неактивная главная кнопка (пока выбор не завершён) */
+    .modal .btn:disabled, .modal .btn:disabled:hover {
+      opacity: .55; cursor: default; transform: none; box-shadow: none;
+    }
+
+    /* ============================================================
+       14. АНИМАЦИЯ ПОЯВЛЕНИЯ СЕКЦИЙ ПРИ ПРОКРУТКЕ
+           (класс .is-visible добавляет JS через IntersectionObserver)
+       ============================================================ */
+    .reveal {
+      opacity: 0; transform: translateY(28px); /* появление снизу: fade-in + slide-up */
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.is-visible { opacity: 1; transform: none; }
+
+    /* Каскадные задержки для соседних элементов одной сетки */
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+
+    /* Уважение к настройке «уменьшить анимацию» */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .popup, .chip-stat { animation: none; }
+      .popup { opacity: 1; }
+      .btn:hover, .social:hover, .feature:hover, .usecase:hover { transform: none; }
+    }
+
+    /* ============================================================
+       15. АДАПТИВ (mobile-first)
+       ============================================================ */
+
+    /* --- Планшет: 768px+ --- */
+    @media (min-width: 768px) {
+      .burger { display: none; }
+
+      /* Навигация становится горизонтальной строкой */
+      .nav {
+        position: static; max-height: none; overflow: visible;
+        opacity: 1; visibility: visible;
+        display: flex; align-items: center; gap: 28px;
+        background: transparent; border: 0; box-shadow: none;
+      }
+      .nav__list { flex-direction: row; gap: 28px; padding: 0; }
+      .nav__link { padding: 0; }
+      .nav__cta { margin: 0; }
+
+      .section { padding-block: 88px; }
+      h2 { font-size: 34px; }
+      .hero { padding-block: 56px 96px; }
+      .hero__title { font-size: 40px; }
+      .hero__sub { font-size: 18px; }
+
+      /* Сетки Features и UseCases — 2 колонки */
+      .features__grid,
+      .usecases__grid { grid-template-columns: repeat(2, 1fr); }
+
+      .screens { grid-template-columns: repeat(2, 1fr); }
+      .interface__mobile { flex-direction: row; justify-content: center; gap: 48px; }
+      .interface__mobile-text { text-align: left; }
+
+      .finalcta h2 { font-size: 38px; }
+      .footer__inner { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+    }
+
+    /* --- Десктоп: 1025px+ --- */
+    @media (min-width: 1025px) {
+      /* Hero — 2 колонки: текст слева, макет справа */
+      .hero__grid { grid-template-columns: 1.05fr 1fr; gap: 56px; }
+      .hero__title { font-size: 48px; }
+      .hero__sub { font-size: 18px; }
+
+      .features__grid { grid-template-columns: repeat(4, 1fr); } /* 4 колонки */
+      .usecases__grid { grid-template-columns: repeat(3, 1fr); }
+      .screens { grid-template-columns: repeat(3, 1fr); }
+
+      /* 4-я карточка UseCases — широкая, в одну строку */
+      .usecase--wide { display: flex; align-items: flex-start; gap: 20px; }
+      .usecase--wide .usecase__icon { margin-bottom: 0; }
+      .usecase--wide .usecase__text { flex: 1; }
+      .usecase--wide h3 { margin-bottom: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- ======================= ШАПКА ======================= -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+
+      <!-- Логотип: текст, Inter Bold, 24px -->
+      <a href="#top" class="logo" aria-label="Bookly — на главную">Bookly</a>
+
+      <!-- Панель навигации: на мобильных раскрывается бургером -->
+      <nav class="nav" id="nav" aria-label="Основная навигация">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="#features">Возможности</a></li>
+          <li><a class="nav__link" href="#pricing">Тарифы</a></li>
+          <li><a class="nav__link" href="#contacts">Контакты</a></li>
+        </ul>
+        <!-- Кнопка «Войти» с серой обводкой: открывает окно входа -->
+        <button class="btn btn--outline btn--sm nav__cta" type="button" data-auth-open="login">Войти</button>
+      </nav>
+
+      <!-- Бургер-меню (виден только до 768px) -->
+      <button class="burger" id="burger" type="button"
+              aria-label="Открыть меню" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ======================= HERO ======================= -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero__grid">
+
+        <!-- Левая колонка: заголовок, подзаголовок, CTA -->
+        <div class="hero__content reveal">
+          <h1 class="hero__title" id="hero-title">Запись, которая работает сама. Пока вы заняты делом</h1>
+          <p class="hero__sub">Сервис онлайн-записи и управления расписанием для салонов, студий и частных мастеров. Без Excel, звонков и потерянных клиентов.</p>
+
+          <!-- CTA открывает демо-виджет записи: попробовать продукт можно прямо на странице -->
+          <button class="btn btn--primary btn--lg" type="button" data-demo-open>Попробовать бесплатно</button>
+
+          <!-- Мелкий текст под кнопкой -->
+          <p class="hero__note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Карта не нужна
+          </p>
+        </div>
+
+        <!-- Правая колонка: макет ноутбука с «живым» календарём -->
+        <div class="hero__visual reveal reveal-delay-1">
+
+          <!-- Плавающая плашка с ключевой цифрой -->
+          <div class="chip-stat" aria-hidden="true">
+            <b>−80%</b>
+            <span>времени на рутину</span>
+          </div>
+
+          <!-- Ноутбук: экран «обрезан» под устройство -->
+          <div class="laptop" role="img" aria-label="Интерфейс Bookly: недельный календарь с плотной записью и окно профиля клиента">
+            <div class="laptop__bezel">
+              <div class="laptop__display">
+                <div class="app" aria-hidden="true">
+
+                  <!-- Верхняя панель приложения -->
+                  <div class="app__top">
+                    <span class="app__brand">Bookly</span>
+                    <span class="app__user">АК</span>
+                  </div>
+
+                  <!-- Заголовок календаря -->
+                  <div class="cal__head">
+                    <span class="cal__title">Ноябрь 2026</span>
+                    <span class="cal__actions">
+                      <span class="cal__btn" aria-hidden="true">‹</span>
+                      <span class="cal__btn cal__btn--today">Сегодня</span>
+                      <span class="cal__btn" aria-hidden="true">›</span>
+                    </span>
+                  </div>
+
+                  <!-- Дни недели (строятся скриптом) -->
+                  <div class="cal-head" id="calHead"></div>
+
+                  <!-- Прокручиваемое тело недели (строятся скриптом ×2 для бесшовного цикла) -->
+                  <div class="cal-viewport">
+                    <div class="cal-track" id="calTrack"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="laptop__base"><span class="laptop__notch"></span></div>
+          </div>
+
+          <!-- Всплывающее окно с профилем клиента -->
+          <div class="popup" aria-hidden="true">
+            <div class="popup__head">
+              <span class="popup__avatar">АК</span>
+              <span>
+                <span class="popup__name">Анна Ковалёва</span>
+                <span class="popup__tag">Постоянный клиент · 14 визитов</span>
+              </span>
+            </div>
+            <div class="popup__row"><span>Последний визит</span><b>12 окт</b></div>
+            <div class="popup__row"><span>Средний чек</span><b>3 400 ₽</b></div>
+            <div class="popup__note">Заметка мастера: аллергия на гель-лак</div>
+            <!-- Клик открывает то же демо-окно записи -->
+            <span class="btn btn--primary" data-demo-open>Подтвердить визит</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= FEATURES ======================= -->
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section__head reveal">
+          <h2 id="features-title">Всё, что нужно для управления расписанием</h2>
+          <p>Четыре инструмента, которые закрывают 90% рутины администратора и мастера.</p>
+        </div>
+
+        <div class="features__grid">
+          <!-- 1. Онлайн-запись 24/7 (иконка Lucide «clock») -->
+          <article class="feature reveal">
+            <span class="icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </span>
+            <h3>Онлайн-запись 24/7</h3>
+            <p>Ваша запись открыта даже ночью. Клиент выбирает удобное время, услугу и мастера. Вы получаете уведомление и просто подтверждаете визит.</p>
+          </article>
+
+          <!-- 2. Единый календарь (иконка Lucide «calendar») -->
+          <article class="feature reveal reveal-delay-1">
+            <span class="icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="16" y1="2" x2="16" y2="4"/>
+                <line x1="8" y1="2" x2="8" y2="4"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </span>
+            <h3>Единый календарь</h3>
+            <p>Все записи, переносы и окна в одном месте. Видно загрузку каждого мастера и всей команды. Цветовые метки для разных услуг — чтобы не путаться в расписании.</p>
+          </article>
+
+          <!-- 3. База клиентов (иконка Lucide «users») -->
+          <article class="feature reveal reveal-delay-2">
+            <span class="icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </span>
+            <h3>База клиентов</h3>
+            <p>Вся история визитов, заметки мастера (например, «аллергия на гель-лак»), предпочтения и средний чек. Никакой потери данных при смене администратора.</p>
+          </article>
+
+          <!-- 4. Автоматические напоминания (иконка Lucide «bell») -->
+          <article class="feature reveal reveal-delay-3">
+            <span class="icon-box" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+            </span>
+            <h3>Автоматические напоминания</h3>
+            <p>SMS или сообщения в мессенджер за 2 часа до визита. Снижает неявку (no-show) до 10–15%. Вам не нужно тратить время на обзвон.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= HOW IT WORKS ======================= -->
+    <section class="section section--light" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section__head reveal">
+          <h2 id="how-title">Запуск за 15 минут</h2>
+          <p>Никаких интеграций и обучающих вебинаров. Три шага — и клиенты записываются сами.</p>
+        </div>
+
+        <!-- Вертикальный таймлайн из 3 шагов -->
+        <ol class="timeline">
+          <li class="step reveal">
+            <span class="step__num" aria-hidden="true">1</span>
+            <div class="step__body">
+              <h3>Заполните расписание</h3>
+              <p>Добавьте услуги, длительность, цены и график работы мастеров.</p>
+            </div>
+          </li>
+
+          <li class="step reveal reveal-delay-1">
+            <span class="step__num" aria-hidden="true">2</span>
+            <div class="step__body">
+              <h3>Поделитесь ссылкой</h3>
+              <p>Разместите виджет на сайте, в шапке профиля Telegram/Instagram или отправьте прямую ссылку клиенту.</p>
+            </div>
+          </li>
+
+          <li class="step reveal reveal-delay-2">
+            <span class="step__num" aria-hidden="true">3</span>
+            <div class="step__body">
+              <h3>Принимайте клиентов</h3>
+              <p>Сервис сам соберёт записи, отправит напоминания и покажет аналитику по выручке.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ======================= INTERFACE ======================= -->
+    <section class="section" id="interface" aria-labelledby="interface-title">
+      <div class="container">
+        <div class="section__head reveal">
+          <h2 id="interface-title">Так выглядит ваш рабочий день</h2>
+          <p>Никаких сложных таблиц. Только чистая логика: кто записан, во сколько, кто из мастеров свободен. Все экраны ниже — живой интерфейс сервиса.</p>
+        </div>
+
+        <div class="screens">
+          <!-- Экран 1: главный дашборд -->
+          <article class="screen reveal">
+            <div class="screen__bar" aria-hidden="true">
+              <span class="screen__dot"></span><span class="screen__dot"></span><span class="screen__dot"></span>
+              <span class="screen__url">app.bookly.ru</span>
+            </div>
+            <div class="screen__body" aria-hidden="true">
+              <div class="stat-cards">
+                <div class="stat-card"><b>48 200 ₽</b><span>Выручка сегодня</span></div>
+                <div class="stat-card"><b class="is-accent">26</b><span>Записей на сегодня</span></div>
+                <div class="stat-card"><b>8</b><span>Новых клиентов</span></div>
+              </div>
+              <div class="visit-list">
+                <div class="visit"><span class="visit__time">09:00</span><span class="visit__client">Анна К. — маникюр · Мария</span><span class="visit__status">Подтверждено</span></div>
+                <div class="visit"><span class="visit__time">10:30</span><span class="visit__client">Ольга С. — педикюр · Ирина</span><span class="visit__status visit__status--wait">Ожидает</span></div>
+                <div class="visit"><span class="visit__time">12:00</span><span class="visit__client">Дмитрий В. — стрижка · Павел</span><span class="visit__status">Подтверждено</span></div>
+                <div class="visit"><span class="visit__time">14:30</span><span class="visit__client">Катя М. — окрашивание · Анна</span><span class="visit__status">Подтверждено</span></div>
+              </div>
+            </div>
+            <p class="screen__caption">Главный дашборд: выручка и записи на сегодня</p>
+          </article>
+
+          <!-- Экран 2: окно записи нового клиента -->
+          <article class="screen reveal reveal-delay-1">
+            <div class="screen__bar" aria-hidden="true">
+              <span class="screen__dot"></span><span class="screen__dot"></span><span class="screen__dot"></span>
+              <span class="screen__url">app.bookly.ru/records/new</span>
+            </div>
+            <div class="screen__body" aria-hidden="true">
+              <div class="form-row">
+                <span class="form-label">Клиент</span>
+                <span class="form-input">Анна Ковалёва <span>＋</span></span>
+              </div>
+              <div class="form-row">
+                <span class="form-label">Услуга</span>
+                <span class="chips">
+                  <span class="chip is-active">Маникюр · 1 800 ₽</span>
+                  <span class="chip">Педикюр · 2 200 ₽</span>
+                  <span class="chip">Брови · 700 ₽</span>
+                </span>
+              </div>
+              <div class="form-row">
+                <span class="form-label">Мастер</span>
+                <span class="chips">
+                  <span class="chip is-active">Мария</span>
+                  <span class="chip">Ирина</span>
+                  <span class="chip">Анна</span>
+                </span>
+              </div>
+              <div class="form-row">
+                <span class="form-label">Время</span>
+                <span class="form-input">Ср, 11 ноября · 12:30 – 14:00 <span>изм.</span></span>
+              </div>
+              <span class="btn btn--primary btn--sm btn--full">Создать запись</span>
+            </div>
+            <p class="screen__caption">Окно записи нового клиента — быстрая форма</p>
+          </article>
+
+          <!-- Экран 3: настройка расписания команды -->
+          <article class="screen reveal reveal-delay-2">
+            <div class="screen__bar" aria-hidden="true">
+              <span class="screen__dot"></span><span class="screen__dot"></span><span class="screen__dot"></span>
+              <span class="screen__url">app.bookly.ru/team</span>
+            </div>
+            <div class="screen__body" aria-hidden="true">
+              <div class="master-row">
+                <span class="master-row__name">Мария</span>
+                <span class="track">
+                  <span class="track__fill" style="left: 5%;  width: 30%;"></span>
+                  <span class="track__fill" style="left: 42%; width: 48%;"></span>
+                </span>
+              </div>
+              <div class="master-row">
+                <span class="master-row__name">Ирина</span>
+                <span class="track">
+                  <span class="track__fill" style="left: 10%; width: 38%;"></span>
+                  <span class="track__fill" style="left: 55%; width: 22%;"></span>
+                </span>
+              </div>
+              <div class="master-row">
+                <span class="master-row__name">Анна</span>
+                <span class="track">
+                  <span class="track__fill" style="left: 0%;   width: 48%;"></span>
+                  <span class="track__fill" style="left: 58%; width: 26%;"></span>
+                </span>
+              </div>
+              <div class="master-row">
+                <span class="master-row__name">Павел</span>
+                <span class="track">
+                  <span class="track__fill" style="left: 20%; width: 32%;"></span>
+                  <span class="track__fill" style="left: 60%; width: 30%;"></span>
+                </span>
+              </div>
+              <div class="form-row">
+                <span class="form-label">Загрузка команды на неделе</span>
+                <span class="form-input">74% · 132 записи <span>детали</span></span>
+              </div>
+            </div>
+            <p class="screen__caption">Расписание команды: видно загрузку каждого мастера</p>
+          </article>
+        </div>
+
+        <!-- Экран 4: мобильный вид — как записывается клиент -->
+        <div class="interface__mobile reveal">
+          <!-- Внутри мокапа — живая кнопка, поэтому role="img" убран:
+               декоративные части скрыты от скринридера, кнопка доступна с клавиатуры -->
+          <div class="phone">
+            <div class="phone__notch" aria-hidden="true"></div>
+            <div class="phone__body">
+              <span class="phone__title" aria-hidden="true">Студия «Мечта» · Маникюр</span>
+              <span class="chips" aria-hidden="true">
+                <span class="chip">Пн, 10</span>
+                <span class="chip is-active">Вт, 11</span>
+                <span class="chip">Ср, 12</span>
+              </span>
+              <div class="slot-grid" aria-hidden="true">
+                <span class="slot">09:00</span>
+                <span class="slot is-active">12:30</span>
+                <span class="slot is-taken">14:00</span>
+                <span class="slot">15:30</span>
+                <span class="slot">17:00</span>
+                <span class="slot is-taken">18:30</span>
+                <span class="slot">19:30</span>
+                <span class="slot">20:00</span>
+              </div>
+              <!-- Открывает то же демо-окно записи -->
+              <button class="btn btn--primary btn--sm btn--full" type="button" data-demo-open>Записаться</button>
+            </div>
+          </div>
+          <div class="interface__mobile-text">
+            <h3>Как это видит клиент</h3>
+            <p>Виджет открывается с телефона по одной ссылке: клиент выбирает услугу, свободное время и мастера — запись сразу попадает в ваш календарь. Без переписок и звонков.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= USECASES ======================= -->
+    <section class="section section--gray" id="usecases" aria-labelledby="usecases-title">
+      <div class="container">
+        <div class="section__head reveal">
+          <h2 id="usecases-title">Для кого подходит</h2>
+          <p>Bookly подстраивается под формат вашего бизнеса, а не наоборот.</p>
+        </div>
+
+        <div class="usecases__grid">
+          <!-- 1. Частным мастерам (иконка Lucide «scissors») -->
+          <article class="usecase reveal">
+            <span class="usecase__icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="6" cy="6" r="3"/>
+                <path d="M8.12 8.12 12 12"/>
+                <path d="M20 4 8.12 15.88"/>
+                <circle cx="6" cy="18" r="3"/>
+                <path d="M14.8 14.8 20 20"/>
+              </svg>
+            </span>
+            <h3>Частным мастерам</h3>
+            <p class="usecase__text"><strong>Боль:</strong> запись теряется в переписках, клиенты записываются на одно и то же время.</p>
+            <p><strong>Решение:</strong> одна ссылка в шапке профиля — и запись ведётся автоматически.</p>
+          </article>
+
+          <!-- 2. Салонам и студиям (иконка Lucide «store») -->
+          <article class="usecase reveal reveal-delay-1">
+            <span class="usecase__icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 1.9-5.8A.5.5 0 0 1 5.42 3h13.16a.5.5 0 0 1 .47.32L21 9"/>
+                <path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/>
+                <path d="M3 9h18"/>
+                <path d="M9 21v-6h6v6"/>
+              </svg>
+            </span>
+            <h3>Салонам и студиям</h3>
+            <p class="usecase__text"><strong>Боль:</strong> администратор тратит 3 часа в день на звонки и перенос записей в тетрадь.</p>
+            <p><strong>Решение:</strong> единый календарь для 5–10 мастеров, где не бывает накладок.</p>
+          </article>
+
+          <!-- 3. Фитнес-тренерам и репетиторам (иконка Lucide «dumbbell») -->
+          <article class="usecase reveal reveal-delay-2">
+            <span class="usecase__icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6.5 6.5 11 11"/>
+                <path d="m21 21-1-1"/>
+                <path d="m3 3 1 1"/>
+                <path d="m18 22 4-4"/>
+                <path d="m2 6 4-4"/>
+                <path d="m3 10 7-7"/>
+                <path d="m14 21 7-7"/>
+              </svg>
+            </span>
+            <h3>Фитнес-тренерам и репетиторам</h3>
+            <p class="usecase__text"><strong>Боль:</strong> нужно постоянно согласовывать окна и напоминать о занятиях.</p>
+            <p><strong>Решение:</strong> клиент сам видит свободные слоты в расписании и бронирует их с предоплатой.</p>
+          </article>
+
+          <!-- 4. Массажистам и бьюти-мастерам — широкая карточка (иконка Lucide «sparkles») -->
+          <article class="usecase usecase--wide reveal reveal-delay-3">
+            <span class="usecase__icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                <path d="M20 3v4"/>
+                <path d="M22 5h-4"/>
+                <path d="M4 17v2"/>
+                <path d="M5 18H3"/>
+              </svg>
+            </span>
+            <div class="usecase__text">
+              <h3>Массажистам и бьюти-мастерам</h3>
+              <p><strong>Боль:</strong> клиенты забывают о визите, график скачет, база хранится в телефоне.</p>
+              <p><strong>Решение:</strong> автоматические напоминания снижают отмены, а база клиентов и их предпочтений всегда под рукой.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= FINAL CTA =======================
+         Анкор #pricing из меню «Тарифы» ведёт сюда: в блоке
+         заявлено, что полный функционал открыт и настройка
+         бесплатна (тариф Free, без привязки карты).            -->
+    <section class="finalcta" id="pricing" aria-labelledby="cta-title">
+      <div class="container">
+        <h2 id="cta-title">Освободите 10 часов в неделю от рутины</h2>
+        <p>Полный функционал уже открыт. Начать можно сегодня: просто перенесите своё текущее расписание — это займёт 15 минут. Никакой привязки карты, настройка бесплатна.</p>
+
+        <!-- Самая яркая кнопка на странице: открывает регистрацию -->
+        <button class="btn btn--bright btn--lg" type="button" data-auth-open="signup">Создать аккаунт и попробовать</button>
+
+        <p class="finalcta__fine">
+          Ваши данные защищены. Мы не передаём базу клиентов третьим лицам. Вы можете экспортировать её в любой момент.
+          <a href="#" data-modal-open="privacy">Политика конфиденциальности</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer class="footer" id="contacts">
+    <div class="container footer__inner">
+
+      <div>
+        <a href="#top" class="logo" aria-label="Bookly — на главную">Bookly</a>
+        <p class="footer__tagline">Сервис онлайн-записи для салонов, студий и мастеров.</p>
+      </div>
+
+      <!-- Быстрые ссылки -->
+      <nav class="footer__nav" aria-label="Быстрые ссылки">
+        <a href="#features">Возможности</a>
+        <a href="#how">Как работает</a>
+        <a href="#interface">Интерфейс</a>
+        <a href="#usecases">Для кого</a>
+        <a href="#" data-modal-open="privacy">Политика конфиденциальности</a>
+      </nav>
+
+      <!-- Иконки соцсетей -->
+      <div class="socials">
+        <a class="social" href="#" aria-label="Мы в Telegram">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+          </svg>
+        </a>
+        <a class="social" href="#" aria-label="Мы в WhatsApp">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </a>
+        <a class="social" href="#" aria-label="Наш канал на YouTube">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/>
+            <path d="m10 15 5-3-5-3z"/>
+          </svg>
+        </a>
+      </div>
+
+      <p class="footer__copy">© <span id="year">2026</span> Bookly. Все права защищены.</p>
+    </div>
+  </footer>
+
+  <!-- ======================= МОДАЛЬНОЕ ОКНО: ВХОД / РЕГИСТРАЦИЯ ======================= -->
+  <div class="modal" id="auth-modal" role="dialog" aria-modal="true"
+       aria-labelledby="auth-title" aria-hidden="true">
+    <div class="modal__card modal__card--form">
+
+      <!-- Крестик закрытия в углу -->
+      <button class="modal__x modal__close" type="button" aria-label="Закрыть окно">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+        </svg>
+      </button>
+
+      <h3 id="auth-title">Попробовать Bookly бесплатно</h3>
+      <p class="modal__sub">14 дней полного доступа, без привязки карты</p>
+
+      <div id="auth-body">
+        <!-- Переключатель «регистрация / вход» -->
+        <div class="auth-tabs" role="tablist" aria-label="Регистрация или вход">
+          <button class="auth-tab" id="auth-tab-signup" role="tab" type="button"
+                  aria-selected="true" aria-controls="auth-form-signup"
+                  data-auth-tab="signup">Создать аккаунт</button>
+          <button class="auth-tab" id="auth-tab-login" role="tab" type="button"
+                  aria-selected="false" aria-controls="auth-form-login"
+                  data-auth-tab="login">У меня есть аккаунт</button>
+        </div>
+
+        <!-- Форма регистрации: novalidate — подсказки показывает наш JS -->
+        <form id="auth-form-signup" role="tabpanel" aria-labelledby="auth-tab-signup" novalidate>
+          <div class="field">
+            <label class="field__label" for="auth-name">Имя</label>
+            <input class="field__input" id="auth-name" type="text" placeholder="Как к вам обращаться" autocomplete="name">
+            <span class="field__error"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="auth-contact">Email или телефон</label>
+            <input class="field__input" id="auth-contact" type="text" placeholder="anna@example.com или +7 900 000-00-00" autocomplete="email">
+            <span class="field__error"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="auth-type">Кто вы?</label>
+            <select class="field__select" id="auth-type">
+              <option value="master">Частный мастер</option>
+              <option value="studio" selected>Студия или салон</option>
+              <option value="other">Другое</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__check">
+              <input type="checkbox" id="auth-agree">
+              <span>Соглашаюсь с <a href="#" data-modal-open="privacy">политикой конфиденциальности</a></span>
+            </label>
+            <span class="field__error"></span>
+          </div>
+          <button class="btn btn--primary btn--full" type="submit">Создать аккаунт</button>
+        </form>
+
+        <!-- Форма входа (по умолчанию скрыта) -->
+        <form id="auth-form-login" role="tabpanel" aria-labelledby="auth-tab-login" class="is-hidden" novalidate>
+          <div class="field">
+            <label class="field__label" for="login-contact">Email или телефон</label>
+            <input class="field__input" id="login-contact" type="text" placeholder="anna@example.com или +7 900 000-00-00" autocomplete="email">
+            <span class="field__error"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="login-password">Пароль</label>
+            <input class="field__input" id="login-password" type="password" placeholder="Ваш пароль" autocomplete="current-password">
+            <span class="field__error"></span>
+          </div>
+          <button class="btn btn--primary btn--full" type="submit">Войти</button>
+        </form>
+      </div>
+
+      <!-- Экран успеха: показывается после «отправки» формы -->
+      <div id="auth-success" class="auth-success is-hidden">
+        <svg class="auth-success__check" width="52" height="52" viewBox="0 0 52 52" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="26" cy="26" r="22"/><path d="M16 27l7 7 13-15"/>
+        </svg>
+        <p id="auth-success-text"></p>
+        <div class="auth-success__btns">
+          <button class="btn btn--primary btn--sm" type="button" data-demo-open>Открыть демо-виджет записи</button>
+          <button class="btn btn--outline btn--sm modal__close" type="button">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= МОДАЛЬНОЕ ОКНО: ДЕМО-ВИДЖЕТ ЗАПИСИ =======================
+       Тот же сценарий, что видит клиент: услуга → день → время → подтверждение -->
+  <div class="modal" id="demo-modal" role="dialog" aria-modal="true"
+       aria-labelledby="demo-title" aria-hidden="true">
+    <div class="modal__card modal__card--demo">
+
+      <button class="modal__x modal__close" type="button" aria-label="Закрыть окно">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+        </svg>
+      </button>
+
+      <h3 id="demo-title">Демо: запись за 30 секунд</h3>
+      <p class="modal__sub">Так же записывается ваш клиент — попробуйте сами</p>
+
+      <!-- Шаги выбора: те же чипы и слоты, что в мокапе телефона -->
+      <div id="demo-app">
+        <div class="demo__step" data-demo-group="service">
+          <span class="form-label">Услуга</span>
+          <span class="chips">
+            <button class="chip" type="button" data-value="Маникюр · 1 800 ₽" aria-pressed="false">Маникюр · 1 800 ₽</button>
+            <button class="chip" type="button" data-value="Педикюр · 2 200 ₽" aria-pressed="false">Педикюр · 2 200 ₽</button>
+            <button class="chip" type="button" data-value="Стрижка · 1 500 ₽" aria-pressed="false">Стрижка · 1 500 ₽</button>
+          </span>
+        </div>
+
+        <div class="demo__step" data-demo-group="day">
+          <span class="form-label">День</span>
+          <span class="chips">
+            <button class="chip" type="button" data-value="Ср, 11 ноября" aria-pressed="false">Ср, 11 ноября</button>
+            <button class="chip" type="button" data-value="Чт, 12 ноября" aria-pressed="false">Чт, 12 ноября</button>
+            <button class="chip" type="button" data-value="Пт, 13 ноября" aria-pressed="false">Пт, 13 ноября</button>
+          </span>
+        </div>
+
+        <div class="demo__step" data-demo-group="time">
+          <span class="form-label">Свободное время</span>
+          <div class="slot-grid">
+            <button class="slot" type="button" data-value="10:00" aria-pressed="false">10:00</button>
+            <button class="slot" type="button" data-value="12:00" aria-pressed="false">12:00</button>
+            <button class="slot is-taken" type="button" disabled>14:00</button>
+            <button class="slot" type="button" data-value="15:30" aria-pressed="false">15:30</button>
+            <button class="slot" type="button" data-value="17:00" aria-pressed="false">17:00</button>
+            <button class="slot is-taken" type="button" disabled>18:30</button>
+            <button class="slot" type="button" data-value="19:30" aria-pressed="false">19:30</button>
+            <button class="slot" type="button" data-value="21:00" aria-pressed="false">21:00</button>
+          </div>
+        </div>
+
+        <!-- Резюме выбора: кнопка записи активна, когда выбраны все три пункта -->
+        <p class="demo__summary" id="demo-summary">Выберите услугу, день и время</p>
+        <button class="btn btn--primary btn--full" id="demo-submit" type="button" disabled>Записаться</button>
+      </div>
+
+      <!-- Экран подтверждения -->
+      <div id="demo-done" class="demo-done is-hidden">
+        <svg class="demo-done__check" width="52" height="52" viewBox="0 0 52 52" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="26" cy="26" r="22"/><path d="M16 27l7 7 13-15"/>
+        </svg>
+        <h4 class="demo-done__title">Вы записаны!</h4>
+        <p class="demo-done__summary" id="demo-done-summary"></p>
+        <p>В реальном сервисе клиенту уже ушло бы SMS с подтверждением, а запись появилась в календаре мастера.</p>
+        <div class="demo-done__btns">
+          <button class="btn btn--primary btn--sm" type="button" data-auth-open="signup">Создать аккаунт</button>
+          <button class="btn btn--outline btn--sm" id="demo-reset" type="button">Записать ещё раз</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================= МОДАЛЬНОЕ ОКНО: ПОЛИТИКА ======================= -->
+  <div class="modal" id="privacy-modal" role="dialog" aria-modal="true"
+       aria-labelledby="privacy-title" aria-hidden="true">
+    <div class="modal__card">
+      <h3 id="privacy-title">Политика конфиденциальности</h3>
+      <p>Мы собираем только те данные, которые нужны для работы записи: имена клиентов, историю визитов и контакты для напоминаний.</p>
+      <p>База клиентов принадлежит вам: она не передаётся третьим лицам и не используется для рекламы. Экспортировать её в CSV можно в любой момент из настроек.</p>
+      <p>Оставаясь в сервисе, вы соглашаетесь с обработкой данных на территории РФ. Отозвать согласие и удалить аккаунт можно одним письмом на support@bookly.ru.</p>
+      <button class="btn btn--outline btn--sm modal__close" type="button">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- ======================= JAVASCRIPT (Vanilla JS) ======================= -->
+  <script>
+    (function () {
+      'use strict';
+      var d = document;
+
+      /* ---------- 1. Шапка: белый фон + тень при скролле ---------- */
+      var header = d.getElementById('header');
+      function onScroll() {
+        header.classList.toggle('header--scrolled', window.scrollY > 10);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      /* ---------- 2. Бургер-меню: плавное открытие/закрытие ---------- */
+      var burger = d.getElementById('burger');
+      var nav = d.getElementById('nav');
+
+      function setMenu(open) {
+        burger.classList.toggle('is-open', open);
+        nav.classList.toggle('is-open', open);
+        burger.setAttribute('aria-expanded', String(open));
+        burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+      }
+      burger.addEventListener('click', function () {
+        setMenu(!nav.classList.contains('is-open'));
+      });
+      /* Закрытие меню после выбора пункта или кнопки (например, «Войти») */
+      nav.addEventListener('click', function (e) {
+        if (e.target.closest('a, button')) setMenu(false);
+      });
+
+      /* ---------- 3. Появление секций при прокрутке ----------
+         Класс .is-visible триггерит CSS-анимацию fade-in + slide-up.
+         Элементы, уже попавшие в экран, показываются сразу.        */
+      var revealEls = d.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target); // показываем один раз — дальше анимация не нужна
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        revealEls.forEach(function (el) { io.observe(el); });
+      } else {
+        /* Фолбэк для старых браузеров без IntersectionObserver */
+        revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      }
+
+      /* ---------- 4. «Живой» календарь в Hero ----------
+         Сетка недели строится из массива событий и дублируется:
+         бесшовная прокрутка идёт до высоты одной недели и сбрасывается. */
+      var calTrack = d.getElementById('calTrack');
+      var calHead = d.getElementById('calHead');
+
+      if (calTrack && calHead) {
+        var DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        var START = 9, END = 20;          // часы сетки, шаг 30 минут
+        var TODAY = 2;                     // среда
+
+        /* Плотная запись недели: d — день (0..6), h — час начала, dur — длительность в часах */
+        var EVENTS = [
+          { d: 0, h: 9,  dur: 2, name: 'Маникюр',    client: 'Анна К.' },
+          { d: 0, h: 11, dur: 2, name: 'Окрашивание', client: 'Ольга С.' },
+          { d: 0, h: 14, dur: 1, name: 'Стрижка',     client: 'Дмитрий В.' },
+          { d: 0, h: 16, dur: 2, name: 'Укладка',    client: 'Катя М.',   type: 'muted' },
+          { d: 0, h: 19, dur: 1, name: 'Массаж',      client: 'Ирина П.' },
+
+          { d: 1, h: 9,  dur: 1, name: 'Брови',       client: 'Юлия Р.' },
+          { d: 1, h: 10, dur: 2, name: 'Маникюр',    client: 'Света К.' },
+          { d: 1, h: 13, dur: 1, name: 'Педикюр',     client: 'Марина Д.', type: 'muted' },
+          { d: 1, h: 15, dur: 2, name: 'Окрашивание', client: 'Вика Л.' },
+          { d: 1, h: 18, dur: 1, name: 'Стрижка',     client: 'Артём Г.' },
+
+          { d: 2, h: 9,  dur: 2, name: 'Маникюр',    client: 'Анна К.' },
+          { d: 2, h: 11, dur: 2, name: 'Стрижка',     client: 'Дмитрий В.' },
+          { d: 2, h: 14, dur: 2, name: 'Окрашивание', client: 'Ольга С.' },
+          { d: 2, h: 17, dur: 1, name: 'Брови',       client: 'Катя М.',   type: 'muted' },
+          { d: 2, h: 19, dur: 1, name: 'Укладка',     client: 'Нина П.' },
+
+          { d: 3, h: 10, dur: 1, name: 'Массаж',      client: 'Ирина П.' },
+          { d: 3, h: 12, dur: 2, name: 'Маникюр',    client: 'Юлия Р.' },
+          { d: 3, h: 15, dur: 2, name: 'Педикюр',     client: 'Света К.' },
+          { d: 3, h: 18, dur: 1, name: 'Стрижка',     client: 'Артём Г.',  type: 'muted' },
+
+          { d: 4, h: 9,  dur: 1, name: 'Стрижка',    client: 'Дмитрий В.' },
+          { d: 4, h: 10, dur: 3, name: 'Окрашивание', client: 'Вика Л.' },
+          { d: 4, h: 14, dur: 2, name: 'Маникюр',    client: 'Анна К.' },
+          { d: 4, h: 17, dur: 1, name: 'Укладка',     client: 'Катя М.' },
+          { d: 4, h: 19, dur: 1, name: 'Массаж',      client: 'Ирина П.', type: 'muted' },
+
+          { d: 5, h: 10, dur: 2, name: 'Маникюр',    client: 'Марина Д.' },
+          { d: 5, h: 13, dur: 2, name: 'Педикюр',    client: 'Ольга С.',  type: 'muted' },
+          { d: 5, h: 16, dur: 2, name: 'Стрижка',     client: 'Артём Г.' },
+
+          { d: 6, h: 11, dur: 2, name: 'Маникюр',    client: 'Юлия Р.' },
+          { d: 6, h: 15, dur: 1, name: 'Брови',       client: 'Нина П.',  type: 'muted' },
+          { d: 6, h: 18, dur: 1, name: 'Маникюр',    client: 'Света К.' }
+        ];
+
+        /* Шапка календаря: пустая ячейка под колонку времени + дни недели */
+        calHead.appendChild(d.createElement('div'));
+        DAYS.forEach(function (day, i) {
+          var cell = d.createElement('div');
+          cell.className = 'cal-head__day' + (i === TODAY ? ' is-today' : '');
+          cell.textContent = day;
+          calHead.appendChild(cell);
+        });
+
+        /* Одна неделя: подписи часов + события на полусменной сетке */
+        function buildWeek() {
+          var week = d.createElement('div');
+          week.className = 'cal-week';
+
+          for (var h = START; h <= END; h++) {
+            var t = d.createElement('div');
+            t.className = 'cal-time';
+            t.textContent = (h < 10 ? '0' + h : h) + ':00';
+            t.style.gridRow = ((h - START) * 2 + 1) + ' / span 2';
+            week.appendChild(t);
+          }
+
+          EVENTS.forEach(function (ev) {
+            var e = d.createElement('div');
+            e.className = 'cal-event cal-event--' + (ev.type || 'busy');
+            e.textContent = ev.name + ' · ' + ev.client;
+            e.title = ev.name + ' — ' + ev.client;
+            e.style.gridColumn = String(ev.d + 2);
+            e.style.gridRow = ((ev.h - START) * 2 + 1) + ' / span ' + (ev.dur * 2);
+            week.appendChild(e);
+          });
+          return week;
+        }
+
+        var week1 = buildWeek(), week2 = buildWeek();
+        calTrack.appendChild(week1);
+        calTrack.appendChild(week2);
+
+        /* Плавная бесшовная прокрутка (отключается, если пользователь
+           попросил ОС «уменьшить анимации», или когда блок вне экрана) */
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduced) {
+          var offset = 0, running = false, lastTs = 0;
+          var SPEED = 14; /* пикселей в секунду — спокойная прокрутка */
+
+          function loop(ts) {
+            if (!running) { return; }
+            if (lastTs) { offset += ((ts - lastTs) / 1000) * SPEED; }
+            lastTs = ts;
+            var h = week1.offsetHeight;
+            if (h) {
+              offset %= h; /* дошли до конца копии — начинаем заново без скачка */
+              calTrack.style.transform = 'translateY(' + (-offset.toFixed(2)) + 'px)';
+            }
+            requestAnimationFrame(loop);
+          }
+          function start() { if (!running) { running = true; lastTs = 0; requestAnimationFrame(loop); } }
+          function stop()  { running = false; }
+
+          /* Крутим календарь, только пока макет в зоне видимости */
+          if ('IntersectionObserver' in window) {
+            new IntersectionObserver(function (entries) {
+              entries[0].isIntersecting ? start() : stop();
+            }, { threshold: 0.05 }).observe(calTrack);
+          } else {
+            start();
+          }
+          /* И на активной вкладке */
+          d.addEventListener('visibilitychange', function () {
+            d.hidden ? stop() : start();
+          });
+        }
+      }
+
+      /* ---------- 5. МОДАЛЬНЫЕ ОКНА: единый менеджер + вход/регистрация + демо ----------
+         Окна образуют «стек»: Esc и клик по затемнению закрывают только
+         верхнее. Открытое окно получает z-index поверх остальных, поэтому
+         порядок в разметке не важен (например, политика может открыться
+         поверх окна регистрации).                                              */
+
+      var modalStack = [];    // стек открытых окон: верхнее — последнее
+      var modalOpeners = {};  // id окна → элемент, который его открыл (для возврата фокуса)
+
+      /* Фокус — сначала в первое видимое поле, а если полей нет —
+         на кнопку закрытия. Окно появляется с CSS-переходом, поэтому
+         фокус переносим с задержкой: сразу после клика элемент ещё
+         «невидим» и focus() срабатывает вхолостую.                    */
+      function focusModal(modal) {
+        window.setTimeout(function () {
+          var fields = modal.querySelectorAll('input, select');
+          var closers = modal.querySelectorAll('.modal__close');
+          for (var i = 0; i < fields.length; i++) {
+            /* offsetParent пуст, когда элемент скрыт через display:none */
+            if (fields[i].offsetParent !== null) { fields[i].focus(); return; }
+          }
+          for (var j = 0; j < closers.length; j++) {
+            if (closers[j].offsetParent !== null) { closers[j].focus(); return; }
+          }
+        }, 60);
+      }
+
+      function openModalEl(modal, opener) {
+        if (!modal) { return; }
+        if (modalStack.indexOf(modal) === -1) { modalStack.push(modal); }
+        modalOpeners[modal.id] = opener || d.activeElement;
+        /* Поверх остальных окон: базовый z-index в CSS — 200 */
+        modal.style.zIndex = String(200 + modalStack.length);
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        focusModal(modal);
+      }
+
+      function closeModalEl(modal) {
+        var i = modalStack.indexOf(modal);
+        if (i !== -1) { modalStack.splice(i, 1); }
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        modal.style.zIndex = '';
+        /* Возвращаем фокус туда, откуда окно открыли */
+        var opener = modalOpeners[modal.id];
+        if (opener && d.contains(opener)) { opener.focus(); }
+        delete modalOpeners[modal.id];
+      }
+
+      function closeTopModal() {
+        if (modalStack.length) { closeModalEl(modalStack[modalStack.length - 1]); }
+      }
+
+      /* Клик по затемнению и по любым кнопкам .modal__close — для всех окон сразу */
+      d.querySelectorAll('.modal').forEach(function (modal) {
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) { closeModalEl(modal); return; }
+          if (e.target.closest('.modal__close')) { closeModalEl(modal); }
+        });
+      });
+
+      /* ---------- 5а. Окно входа / регистрации ---------- */
+      var authModal = d.getElementById('auth-modal');
+      var authTitle = d.getElementById('auth-title');
+      var authBody = d.getElementById('auth-body');
+      var authSuccess = d.getElementById('auth-success');
+      var authSuccessText = d.getElementById('auth-success-text');
+
+      /* Переключение режимов «Создать аккаунт» / «У меня есть аккаунт» */
+      function setAuthMode(mode) {
+        d.querySelectorAll('.auth-tab').forEach(function (tab) {
+          var active = tab.getAttribute('data-auth-tab') === mode;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+        d.getElementById('auth-form-signup').classList.toggle('is-hidden', mode !== 'signup');
+        d.getElementById('auth-form-login').classList.toggle('is-hidden', mode !== 'login');
+        authTitle.textContent = mode === 'signup'
+          ? 'Попробовать Bookly бесплатно'
+          : 'С возвращением';
+        /* Прячем экран успеха и старые ошибки */
+        authSuccess.classList.add('is-hidden');
+        authBody.classList.remove('is-hidden');
+        clearErrors(authModal);
+      }
+
+      /* Ошибки валидации пишутся красным под полем */
+      function setError(input, message) {
+        var field = input.closest('.field');
+        field.classList.add('is-error');
+        field.querySelector('.field__error').textContent = message;
+      }
+      function clearErrors(scope) {
+        scope.querySelectorAll('.field').forEach(function (f) {
+          f.classList.remove('is-error');
+          var err = f.querySelector('.field__error');
+          if (err) { err.textContent = ''; }
+        });
+      }
+      /* Контакт — это email ИЛИ телефон (не меньше 10 цифр) */
+      function isContact(value) {
+        var digits = value.replace(/\D/g, '');
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value) || digits.length >= 10;
+      }
+
+      /* Регистрация: имя + контакт + согласие */
+      d.getElementById('auth-form-signup').addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearErrors(authModal);
+        var name = d.getElementById('auth-name');
+        var contact = d.getElementById('auth-contact');
+        var agree = d.getElementById('auth-agree');
+        var ok = true;
+        if (name.value.trim().length < 2) { setError(name, 'Введите имя — минимум 2 символа'); ok = false; }
+        if (!isContact(contact.value.trim())) { setError(contact, 'Укажите email или телефон'); ok = false; }
+        if (!agree.checked) { setError(agree, 'Нужно согласие на обработку данных'); ok = false; }
+        if (!ok) { return; }
+        /* Демо-режим: данные никуда не отправляются, аккаунт «создаётся» локально */
+        var firstName = name.value.trim().split(/\s+/)[0];
+        authSuccessText.textContent = firstName + ', аккаунт создан! Письмо с подтверждением уже отправлено — а пока можно посмотреть, как выглядит запись у клиента.';
+        authBody.classList.add('is-hidden');
+        authSuccess.classList.remove('is-hidden');
+      });
+
+      /* Вход: контакт + пароль */
+      d.getElementById('auth-form-login').addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearErrors(authModal);
+        var contact = d.getElementById('login-contact');
+        var password = d.getElementById('login-password');
+        var ok = true;
+        if (!isContact(contact.value.trim())) { setError(contact, 'Укажите email или телефон'); ok = false; }
+        if (password.value.length < 4) { setError(password, 'Пароль — минимум 4 символа'); ok = false; }
+        if (!ok) { return; }
+        authSuccessText.textContent = 'Вы вошли! Ниже — демо-виджет записи: создайте первую запись и посмотрите, как всё устроено.';
+        authBody.classList.add('is-hidden');
+        authSuccess.classList.remove('is-hidden');
+      });
+
+      /* Табы режимов */
+      d.querySelectorAll('.auth-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          setAuthMode(tab.getAttribute('data-auth-tab'));
+        });
+      });
+
+      /* ---------- 5б. Демо-виджет записи ---------- */
+      var demoModal = d.getElementById('demo-modal');
+      var demoApp = d.getElementById('demo-app');
+      var demoDone = d.getElementById('demo-done');
+      var demoSummary = d.getElementById('demo-summary');
+      var demoSubmit = d.getElementById('demo-submit');
+      var demoPick = { service: null, day: null, time: null };
+
+      function demoReset() {
+        demoPick = { service: null, day: null, time: null };
+        demoApp.classList.remove('is-hidden');
+        demoDone.classList.add('is-hidden');
+        demoModal.querySelectorAll('[data-demo-group] button').forEach(function (b) {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        demoUpdate();
+      }
+
+      /* Резюме выбора + доступность кнопки записи */
+      function demoUpdate() {
+        if (demoPick.service && demoPick.day && demoPick.time) {
+          demoSummary.textContent = demoPick.service + ' — ' + demoPick.day + ' в ' + demoPick.time;
+          demoSubmit.disabled = false;
+        } else {
+          demoSummary.textContent = 'Выберите услугу, день и время';
+          demoSubmit.disabled = true;
+        }
+      }
+
+      /* Выбор варианта: в каждой группе активен только один,
+         повторный клик по активному — снимает выбор */
+      demoApp.addEventListener('click', function (e) {
+        var btn = e.target.closest('button');
+        if (!btn || !demoApp.contains(btn)) { return; }
+        var group = btn.closest('[data-demo-group]');
+        if (!group) { return; }
+        var key = group.getAttribute('data-demo-group');
+        var wasActive = btn.classList.contains('is-active');
+        group.querySelectorAll('button').forEach(function (b) {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        if (wasActive) {
+          demoPick[key] = null;
+        } else {
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-pressed', 'true');
+          demoPick[key] = btn.getAttribute('data-value');
+        }
+        demoUpdate();
+      });
+
+      /* Подтверждение: показываем экран успеха с итогом записи */
+      demoSubmit.addEventListener('click', function () {
+        d.getElementById('demo-done-summary').textContent =
+          demoPick.service + ' — ' + demoPick.day + ' в ' + demoPick.time;
+        demoApp.classList.add('is-hidden');
+        demoDone.classList.remove('is-hidden');
+      });
+
+      /* «Записать ещё раз» — вернуться к шагам выбора */
+      d.getElementById('demo-reset').addEventListener('click', demoReset);
+
+      /* ---------- 5в. Один обработчик на все CTA ----------
+         [data-modal-open] — политика (в т.ч. из окна регистрации),
+         [data-auth-open]  — вход/регистрация из шапки и финального блока,
+         [data-demo-open] — демо-виджет записи из hero и мокапа.       */
+      d.addEventListener('click', function (e) {
+        var t;
+
+        t = e.target.closest('[data-modal-open]');
+        if (t) {
+          e.preventDefault(); /* у ссылок href="#" — не скроллим страницу */
+          openModalEl(d.getElementById(t.getAttribute('data-modal-open') + '-modal'), t);
+          return;
+        }
+        t = e.target.closest('[data-auth-open]');
+        if (t) {
+          setAuthMode(t.getAttribute('data-auth-open'));
+          openModalEl(authModal, t);
+          return;
+        }
+        t = e.target.closest('[data-demo-open]');
+        if (t) { demoReset(); openModalEl(demoModal, t); return; }
+
+        /* Пустые ссылки соцсетей (href="#") не должны прыгать к началу страницы */
+        if (e.target.closest('a[href="#"]')) { e.preventDefault(); }
+      });
+
+      /* ---------- 6. Esc: закрыть верхнее модальное окно и меню ---------- */
+      d.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') { return; }
+        closeTopModal();
+        setMenu(false);
+      });
+
+      /* ---------- 7. Актуальный год в футере ---------- */
+      d.getElementById('year').textContent = String(new Date().getFullYear());
+    })();
+  </script>
+</body>
+</html>
